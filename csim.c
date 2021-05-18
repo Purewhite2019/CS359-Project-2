@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
         while(i < len && !isalnum(cmd[i])) ++i;
         cnt = atoi(cmd+i);
         if(isVerbose){
-            printf("%c %lx, %d ", cmd[1], addr, cnt);
+            printf("%c %lx,%d ", cmd[1], addr, cnt);
         }
         switch(cmd[1]){
             case 'M':
