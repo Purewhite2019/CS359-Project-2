@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "cctype": "c",
+        "cstdio": "c"
+    }
+}
