@@ -161,7 +161,8 @@ int main(int argc, char *argv[])
 }
 
 void caccess(cache_t cache, uint64_t addr, int cnt){
-    uint64_t tag = get_tag(addr), index = get_index(addr), offset = get_offset(addr);
+    uint64_t tag = get_tag(addr), index = get_index(addr);
+    // uint64_t offset = get_offset(addr);
     ++cur_timer;
     // printf("tag: %lx, index: %lx, offset: %lx\n", tag, index, offset);
     fflush(stdout);
