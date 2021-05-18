@@ -4,13 +4,14 @@
 //              and outputs the total number of hits, misses, and evictions.
 // Author: Qi Liu (519021910529, purewhite@sjtu.edu.cn)
 
+#define _GNU_SOURCE
 #include <unistd.h>
 #include <getopt.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdio.h>
 #include "cachelab.h"
 
 #define ADDR_LENGTH 64
@@ -34,10 +35,11 @@ char *HELPER_INFO[] = {
 "\t•-s <s>: Number of set index bits (num_set = 2^s is the number of sets)", 
 "\t•-E <E>: Associativity (number of lines perset)", 
 "\t•-b <b>: Number of block bits (size_block = 2^b is the blocksize)", 
-"\t•-t <tracefile>: Name of the valgrind trace to replay"
+"\t•-t <tracefile>: Name of the valgrind trace to replay",
+"\t•-S : Optional step flag that enables step mode"
 };
 
-int t = -1, s = -1, b = -1, e = -1, isVerbose = 0;;
+int t = -1, s = -1, b = -1, e = -1, isVerbose = 0, isStepping = 0;
 int num_set = -1, size_block = -1;
 int hit_cnt = 0, miss_cnt = 0, evict_cnt = 0, cur_timer = 0;
 
@@ -66,7 +68,7 @@ int main(int argc, char *argv[])
     int cnt;
     size_t len;
 
-    while((opt = getopt(argc, argv, "hvs:E:b:t:")) != -1){
+    while((opt = getopt(argc, argv, "hvSs:E:b:t:")) != -1){
         switch(opt){
             case 'h':
                 printf("Usage: %s %s\n", argv[0], HELPER_INFO[0]);
@@ -74,6 +76,8 @@ int main(int argc, char *argv[])
                     printf("%s\n", HELPER_INFO[i]);
                 exit(EXIT_SUCCESS);
                 break;
+            case 'S':   // Step Mode.
+                isStepping = 1; // No "break" because Verbose should be enabled in Step Mode.
             case 'v':
                 isVerbose = 1;
                 break;
@@ -144,7 +148,8 @@ int main(int argc, char *argv[])
             case 'L':
             case 'S':
                 caccess(cache, addr, cnt);
-                putchar('\n');
+                if(isVerbose)
+                    putchar('\n');
                 break;
             default:
                 fprintf(stderr, "Error: invalid command \"%c\"\n", cmd[1]);
@@ -152,6 +157,8 @@ int main(int argc, char *argv[])
         }
         free(cmd);
         cmd = NULL;
+        if(isStepping)
+            getchar();
     }
     printSummary(hit_cnt, miss_cnt, evict_cnt);
     // printf("hit_cnt:%d miss_cnt:%d evict_cnt:%d\n", hit_cnt, miss_cnt, evict_cnt);

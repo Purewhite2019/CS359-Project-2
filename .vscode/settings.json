@@ -2,5 +2,6 @@
     "files.associations": {
         "cctype": "c",
         "cstdio": "c"
-    }
+    },
+    "python.pythonPath": "/home/purewhite/anaconda3/bin/python"
 }
