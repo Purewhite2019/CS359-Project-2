@@ -36,10 +36,11 @@ char *HELPER_INFO[] = {
 "\t•-E <E>: Associativity (number of lines perset)", 
 "\t•-b <b>: Number of block bits (size_block = 2^b is the blocksize)", 
 "\t•-t <tracefile>: Name of the valgrind trace to replay",
-"\t•-S : Optional step flag that enables step mode"
+"\t•-S : Optional step flag that enables step mode",
+"\t•-V : Optional step flag that enables more-verbose mode"
 };
 
-int t = -1, s = -1, b = -1, e = -1, isVerbose = 0, isStepping = 0;
+int t = -1, s = -1, b = -1, e = -1, isVerbose = 0, isMoreVerbose = 0, isStepping = 0;
 int num_set = -1, size_block = -1;
 int hit_cnt = 0, miss_cnt = 0, evict_cnt = 0, cur_timer = 0;
 
@@ -68,7 +69,7 @@ int main(int argc, char *argv[])
     int cnt;
     size_t len;
 
-    while((opt = getopt(argc, argv, "hvSs:E:b:t:")) != -1){
+    while((opt = getopt(argc, argv, "hvVSs:E:b:t:")) != -1){
         switch(opt){
             case 'h':
                 printf("Usage: %s %s\n", argv[0], HELPER_INFO[0]);
@@ -77,7 +78,9 @@ int main(int argc, char *argv[])
                 exit(EXIT_SUCCESS);
                 break;
             case 'S':   // Step Mode.
-                isStepping = 1; // No "break" because Verbose should be enabled in Step Mode.
+                isStepping = 1; // No "break" because More-Verbose should be enabled in Step Mode.
+            case 'V':
+                isMoreVerbose = 1;// No "break" because Verbose should be enabled in More-Verbose Mode.
             case 'v':
                 isVerbose = 1;
                 break;
@@ -185,8 +188,11 @@ void caccess(cache_t cache, uint64_t addr, int cnt){
         }
     }
     ++miss_cnt;
-    if(isVerbose)
+    if(isVerbose){
         printf("miss ");
+        if(isMoreVerbose)
+            printf("index:<%lu> ", index);
+    }
     int place = 0;
     while(place < e && cache[index][place].valid) ++place;
     if(place < e){
