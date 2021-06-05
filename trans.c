@@ -493,170 +493,83 @@ void transpose_submit(int M, int N, int A[N][M], int B[M][N]){
             for(jj = 0; jj < M/8; ++jj){
                 if(ii == jj){
                     for(i = 0; i < 4; ++i){
-                        c0 = A[ii*8+i][jj*8+0];
-                        c1 = A[ii*8+i][jj*8+1];
-                        c2 = A[ii*8+i][jj*8+2];
-                        c3 = A[ii*8+i][jj*8+3];
-                        B[ii*8+i][jj*8+0] = c0;
-                        B[ii*8+i][jj*8+0] = c1;
-                        B[ii*8+i][jj*8+0] = c2;
-                        B[ii*8+i][jj*8+0] = c3;
-                    }
-                    for(i = 0; i < 4; ++i){
-                        for(j = 0; j < 4; ++j)
-                        c0 = B[ii*8+i][jj*8+j];
-                        B[ii*8+i][jj*8+j] = B[jj*8+j][ii*8+i];
-                        B[jj*8+j][ii*8+i] = c0;
-                    }
-                    for(i = 0; i < 4; ++i){
-                        for(j = 4; j < 8; ++j)
-                        c0 = B[ii*8+i][jj*8+j];
-                        B[ii*8+i][jj*8+j] = B[jj*8+j][ii*8+i];
-                        B[jj*8+j][ii*8+i] = c0;
+                        for(j = 0; j < 4; ++j){
+                            if(i % 4 == j % 4){
+                                if(i % 4 != 0)
+                                    B[jj*8+j-1][ii*8+i-1] = c0;
+                                c0 = A[ii*8+i][jj*8+j];
+                                continue;
+                            }
+                            B[jj*8+j][ii*8+i] = A[ii*8+i][jj*8+j];
+                        }
                     }
                     for(i = 4; i < 8; ++i){
-                        for(j = 4; j < 8; ++j)
-                        c0 = B[ii*8+i][jj*8+j];
-                        B[ii*8+i][jj*8+j] = B[jj*8+j][ii*8+i];
-                        B[jj*8+j][ii*8+i] = c0;
+                        for(j = 0; j < 4; ++j){
+                            if(i % 4 == j % 4){
+                                if(i % 4 != 0)
+                                    B[jj*8+j-1][ii*8+i-1] = c1;
+                                c1 = A[ii*8+i][jj*8+j];
+                                continue;
+                            }
+                            B[jj*8+j][ii*8+i] = A[ii*8+i][jj*8+j];
+                        }
                     }
+                    B[jj*8+3][ii*8+3] = c0;
+                    B[jj*8+3][ii*8+7] = c1;
                     for(i = 4; i < 8; ++i){
-                        for(j = 0; j < 4; ++j)
-                        c0 = B[ii*8+i][jj*8+j];
-                        B[ii*8+i][jj*8+j] = B[jj*8+j][ii*8+i];
-                        B[jj*8+j][ii*8+i] = c0;
+                        for(j = 4; j < 8; ++j){
+                            if(i % 4 == j % 4){
+                                if(i % 4 != 0)
+                                    B[jj*8+j-1][ii*8+i-1] = c0;
+                                c0 = A[ii*8+i][jj*8+j];
+                                continue;
+                            }
+                            B[jj*8+j][ii*8+i] = A[ii*8+i][jj*8+j];
+                        }
                     }
-                    
+                    for(i = 0; i < 4; ++i){
+                        for(j = 4; j < 8; ++j){
+                            if(i % 4 == j % 4){
+                                if(i % 4 != 0)
+                                    B[jj*8+j-1][ii*8+i-1] = c1;
+                                c1 = A[ii*8+i][jj*8+j];
+                                continue;
+                            }
+                            B[jj*8+j][ii*8+i] = A[ii*8+i][jj*8+j];
+                        }
+                    }
+                    B[jj*8+7][ii*8+3] = c1;
+                    B[jj*8+7][ii*8+7] = c0;
                 }
                 else{
-                    c0 = A[ii*8+0][jj*8+0];
-                    c1 = A[ii*8+0][jj*8+1];
-                    c2 = A[ii*8+0][jj*8+2];
-                    c3 = A[ii*8+0][jj*8+3];
-                    B[jj*8+0][ii*8+0] = c0;
-                    B[jj*8+1][ii*8+0] = c1;
-                    B[jj*8+2][ii*8+0] = c2;
-                    B[jj*8+3][ii*8+0] = c3;
-                    c0 = A[ii*8+1][jj*8+0];
-                    c1 = A[ii*8+1][jj*8+1];
-                    c2 = A[ii*8+1][jj*8+2];
-                    c3 = A[ii*8+1][jj*8+3];
-                    B[jj*8+0][ii*8+1] = c0;
-                    B[jj*8+1][ii*8+1] = c1;
-                    B[jj*8+2][ii*8+1] = c2;
-                    B[jj*8+3][ii*8+1] = c3;
-                    c0 = A[ii*8+2][jj*8+0];
-                    c1 = A[ii*8+2][jj*8+1];
-                    c2 = A[ii*8+2][jj*8+2];
-                    c3 = A[ii*8+2][jj*8+3];
-                    B[jj*8+0][ii*8+2] = c0;
-                    B[jj*8+1][ii*8+2] = c1;
-                    B[jj*8+2][ii*8+2] = c2;
-                    B[jj*8+3][ii*8+2] = c3;
-                    c0 = A[ii*8+3][jj*8+0];
-                    c1 = A[ii*8+3][jj*8+1];
-                    c2 = A[ii*8+3][jj*8+2];
-                    c3 = A[ii*8+3][jj*8+3];
-                    B[jj*8+0][ii*8+3] = c0;
-                    B[jj*8+1][ii*8+3] = c1;
-                    B[jj*8+2][ii*8+3] = c2;
-                    B[jj*8+3][ii*8+3] = c3;
-                    c0 = A[ii*8+4][jj*8+0];
-                    c1 = A[ii*8+4][jj*8+1];
-                    c2 = A[ii*8+4][jj*8+2];
-                    c3 = A[ii*8+4][jj*8+3];
-                    B[jj*8+0][ii*8+4] = c0;
-                    B[jj*8+1][ii*8+4] = c1;
-                    B[jj*8+2][ii*8+4] = c2;
-                    B[jj*8+3][ii*8+4] = c3;
-                    c0 = A[ii*8+5][jj*8+0];
-                    c1 = A[ii*8+5][jj*8+1];
-                    c2 = A[ii*8+5][jj*8+2];
-                    c3 = A[ii*8+5][jj*8+3];
-                    B[jj*8+0][ii*8+5] = c0;
-                    B[jj*8+1][ii*8+5] = c1;
-                    B[jj*8+2][ii*8+5] = c2;
-                    B[jj*8+3][ii*8+5] = c3;
-                    c0 = A[ii*8+6][jj*8+0];
-                    c1 = A[ii*8+6][jj*8+1];
-                    c2 = A[ii*8+6][jj*8+2];
-                    c3 = A[ii*8+6][jj*8+3];
-                    B[jj*8+0][ii*8+6] = c0;
-                    B[jj*8+1][ii*8+6] = c1;
-                    B[jj*8+2][ii*8+6] = c2;
-                    B[jj*8+3][ii*8+6] = c3;
-                    c0 = A[ii*8+7][jj*8+0];
-                    c1 = A[ii*8+7][jj*8+1];
-                    c2 = A[ii*8+7][jj*8+2];
-                    c3 = A[ii*8+7][jj*8+3];
-                    B[jj*8+0][ii*8+7] = c0;
-                    B[jj*8+1][ii*8+7] = c1;
-                    B[jj*8+2][ii*8+7] = c2;
-                    B[jj*8+3][ii*8+7] = c3;
-                    c4 = A[ii*8+4][jj*8+4];
-                    c5 = A[ii*8+4][jj*8+5];
-                    c6 = A[ii*8+4][jj*8+6];
-                    c7 = A[ii*8+4][jj*8+7];
-                    B[jj*8+4][ii*8+4] = c4;
-                    B[jj*8+5][ii*8+4] = c5;
-                    B[jj*8+6][ii*8+4] = c6;
-                    B[jj*8+7][ii*8+4] = c7;
-                    c4 = A[ii*8+5][jj*8+4];
-                    c5 = A[ii*8+5][jj*8+5];
-                    c6 = A[ii*8+5][jj*8+6];
-                    c7 = A[ii*8+5][jj*8+7];
-                    B[jj*8+4][ii*8+5] = c4;
-                    B[jj*8+5][ii*8+5] = c5;
-                    B[jj*8+6][ii*8+5] = c6;
-                    B[jj*8+7][ii*8+5] = c7;
-                    c4 = A[ii*8+6][jj*8+4];
-                    c5 = A[ii*8+6][jj*8+5];
-                    c6 = A[ii*8+6][jj*8+6];
-                    c7 = A[ii*8+6][jj*8+7];
-                    B[jj*8+4][ii*8+6] = c4;
-                    B[jj*8+5][ii*8+6] = c5;
-                    B[jj*8+6][ii*8+6] = c6;
-                    B[jj*8+7][ii*8+6] = c7;
-                    c4 = A[ii*8+7][jj*8+4];
-                    c5 = A[ii*8+7][jj*8+5];
-                    c6 = A[ii*8+7][jj*8+6];
-                    c7 = A[ii*8+7][jj*8+7];
-                    B[jj*8+4][ii*8+7] = c4;
-                    B[jj*8+5][ii*8+7] = c5;
-                    B[jj*8+6][ii*8+7] = c6;
-                    B[jj*8+7][ii*8+7] = c7;
-                    c4 = A[ii*8+0][jj*8+4];
-                    c5 = A[ii*8+0][jj*8+5];
-                    c6 = A[ii*8+0][jj*8+6];
-                    c7 = A[ii*8+0][jj*8+7];
-                    B[jj*8+4][ii*8+0] = c4;
-                    B[jj*8+5][ii*8+0] = c5;
-                    B[jj*8+6][ii*8+0] = c6;
-                    B[jj*8+7][ii*8+0] = c7;
-                    c4 = A[ii*8+1][jj*8+4];
-                    c5 = A[ii*8+1][jj*8+5];
-                    c6 = A[ii*8+1][jj*8+6];
-                    c7 = A[ii*8+1][jj*8+7];
-                    B[jj*8+4][ii*8+1] = c4;
-                    B[jj*8+5][ii*8+1] = c5;
-                    B[jj*8+6][ii*8+1] = c6;
-                    B[jj*8+7][ii*8+1] = c7;
-                    c4 = A[ii*8+2][jj*8+4];
-                    c5 = A[ii*8+2][jj*8+5];
-                    c6 = A[ii*8+2][jj*8+6];
-                    c7 = A[ii*8+2][jj*8+7];
-                    B[jj*8+4][ii*8+2] = c4;
-                    B[jj*8+5][ii*8+2] = c5;
-                    B[jj*8+6][ii*8+2] = c6;
-                    B[jj*8+7][ii*8+2] = c7;
-                    c4 = A[ii*8+3][jj*8+4];
-                    c5 = A[ii*8+3][jj*8+5];
-                    c6 = A[ii*8+3][jj*8+6];
-                    c7 = A[ii*8+3][jj*8+7];
-                    B[jj*8+4][ii*8+3] = c4;
-                    B[jj*8+5][ii*8+3] = c5;
-                    B[jj*8+6][ii*8+3] = c6;
-                    B[jj*8+7][ii*8+3] = c7;
+                    for(i = 0; i < 4; ++i){
+                        for(j = 0; j < 4; ++j){
+                            B[jj*8+j][ii*8+i] = A[ii*8+i][jj*8+j];
+                        }
+                    }
+                    for(i = 0; i < 4; ++i)                          // trans(A[0~3][4~7]) -> B[0~3][4~7]
+                        for(j = 4; j < 8; ++j)
+                            B[jj*8+j-4][ii*8+i+4] = A[ii*8+i][jj*8+j];
+
+                    for(j = 0; j < 4; ++j){                         // B[0~3][4~7] -> B[4~7][0~3]
+                        c4 = B[jj*8+j][ii*8+4];
+                        c5 = B[jj*8+j][ii*8+5];
+                        c6 = B[jj*8+j][ii*8+6];
+                        c7 = B[jj*8+j][ii*8+7];
+
+                        for(i = 4; i < 8; ++i)
+                            B[jj*8+j][ii*8+i] = A[ii*8+i][jj*8+j];
+
+                        B[jj*8+j+4][ii*8+0] = c4;
+                        B[jj*8+j+4][ii*8+1] = c5;
+                        B[jj*8+j+4][ii*8+2] = c6;
+                        B[jj*8+j+4][ii*8+3] = c7;
+                    }
+                    for(i = 4; i < 8; ++i){
+                        for(j = 4; j < 8; ++j){
+                            B[jj*8+j][ii*8+i] = A[ii*8+i][jj*8+j];
+                        }
+                    }
                 }
             }
         }
