@@ -12,7 +12,23 @@ int main(){
     //         printf("B[jj*THRESHOLD+%d][ii*THRESHOLD+%d] = c%d;\n", l, k, l);
     // }
     // putchar('\n');
-    
+    for(int i = 0; i < 8; ++i)
+        printf("c%d = A[ii*8+i][jj*8+%d];\n", i, i);
+    for(int i = 0; i < 8; ++i){
+        printf("B[ii*8+i][jj*8+%d] = c%d;\n", i, i);
+    }
+    putchar('\n');
+
+    for(int i = 0; i < 8; ++i)
+        printf("c%d = A[ii*8+%d][jj*8+%d];\n", i, i, i);
+    for(int i = 0; i < 8; ++i){
+        for(int j = 0; j < 8; ++j){
+            if(j == i) continue;
+            printf("B[jj*8+%d][ii*8+%d] = A[ii*8+%d][jj*8+%d];\n", j, i, i, j);
+        }
+        printf("B[jj*8+%d][ii*8+%d] = c%d;\n", i, i, i);
+    }
+    putchar('\n');
     for(i = 0; i < 4; ++i){
         for(j = 0; j < 4; ++j)
             printf("c%d = A[ii*8+%d][jj*8+%d];\n", j, i, j);
