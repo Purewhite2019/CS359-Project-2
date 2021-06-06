@@ -29,7 +29,7 @@ typedef block_t* set_t;
 typedef set_t* cache_t;
 
 char *HELPER_INFO[] = {
-"[-hv] -s <s> -E <E> -b <b> -t <tracefile>", 
+"[-hvVS] -s <s> -E <E> -b <b> -t <tracefile>", 
 "\t•-h: Optional help flag that prints usage info", 
 "\t•-v: Optional verbose flag that displays trace info", 
 "\t•-s <s>: Number of set index bits (num_set = 2^s is the number of sets)", 
